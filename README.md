@@ -116,6 +116,7 @@ Sending Access-Request of id 192 to 127.0.0.1 port 1812
         NAS-IP-Address = 127.0.1.1
         NAS-Port = 0
         Message-Authenticator = 0x00000000000000000000000000000000
+rad_recv: Access-Accept packet from host 127.0.0.1 port 1812, id=32, length=20
 ```
 - now you can test with another device. Connect to the new wifi hotspot, and try to login with test1/test2
 - change every password! (daloRadius admin, SSH, chilli secret-key, ...)
