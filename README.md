@@ -45,3 +45,77 @@ Support
 Please use input your requests or issues in the GIT repository 
 
 Any contribution is welcome !
+
+
+
+
+How-to Rpi3 2016-11:
+===
+
+- Install minibian image to SD
+- connecth with SSH and resize SD: ([source](https://minibianpi.wordpress.com/how-to/resize-sd/))
+```
+#connect to Rpi3 with SSH
+fdisk /dev/mmcblk0
+#p, d, 2, n, p, 2, (create a new primary partition, next you need to enter the start of the old main partition and then the size (enter for complete SD card). The main partition on Minibian image from 2016-11-27 starts at 125056, but the start of your partition might be different. Check the p output!)
+#w
+reboot
+resize2fs /dev/mmcblk0p2
+df -h #(to check size)
+```
+  
+- onboard wifi, and bluetooth ([source](https://minibianpi.wordpress.com/how-to/rpi3/))
+```
+apt-get update
+apt-get install firmware-brcm80211 pi-bluetooth wpasupplicant
+```
+
+- install editor  
+```
+apt-get install nano
+```
+- install external Ralink USB wifi ([source](https://minibianpi.wordpress.com/how-to/wifi/))
+```
+#to check USB wifi:
+apt-get install usbutils 
+#verify firmware name (something similar: Bus 001 Device 004: ID 148f:5370 Ralink Technology...)
+apt-get install firmware-realtek
+apt-get install wpasupplicant (is this optional if we only need hotspot?)
+```
+- modifie interfaces, comment out everything about wlan0 and insert this:
+```
+auto wlan1
+allow-hotplug wlan1
+iface wlan1 inet static
+        address 192.168.10.1
+        netmask 255.255.255.0
+        network 192.168.10.0
+        post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+```
+
+- run the script, from original source (or from this fork)
+```
+apt-get install git
+git clone https://github.com/pihomeserver/Pi-Hotspot.git
+cd Pi-Hotspot
+chmod +x pihotspot.sh
+nano pihotspot.sh #(modifie ssid, and interface)
+./pihotspot.sh
+```
+- testing:
+  - login to daloRadius -> managment/users/New User - quick add -> name: test1 password: test2
+  - run this in ssh:
+```
+radtest test1 test2 127.0.0.1 0 testing123
+```
+  - if it's work you will see this:
+```
+Sending Access-Request of id 192 to 127.0.0.1 port 1812
+        User-Name = "test1"
+        User-Password = "test2"
+        NAS-IP-Address = 127.0.1.1
+        NAS-Port = 0
+        Message-Authenticator = 0x00000000000000000000000000000000
+```
+- now you can test with another device. Connect to the new wifi hotspot, and try to login with test1/test2
+- change every password! (daloRadius admin, SSH, chilli secret-key, ...)
