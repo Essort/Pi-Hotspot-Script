@@ -120,3 +120,11 @@ rad_recv: Access-Accept packet from host 127.0.0.1 port 1812, id=32, length=20
 ```
 - now you can test with another device. Connect to the new wifi hotspot, and try to login with test1/test2
 - change every password! (daloRadius admin, SSH, chilli secret-key, ...)
+
+daloRADIUS extra:
+===
+- set permissions:
+```
+chown www-data:www-data /usr/share/nginx/html -R
+chmod 644 /usr/share/nginx/html/daloradius/library/daloradius.conf.php
+```
